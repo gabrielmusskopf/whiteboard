@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-public class Main {
+public class ClientApplication {
 
 	public static void main(String[] args) throws IOException {
 		final var client = new Socket("localhost", 12345);
@@ -15,7 +15,7 @@ public class Main {
 		int current, previous = -1;
 
 		while ((current = input.read()) != -1) {
-			sb.append(current);
+			sb.append((char) current);
 			if (previous == '\n' && current == '\n') {
 				break;
 			}
