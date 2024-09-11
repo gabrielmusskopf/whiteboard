@@ -11,18 +11,16 @@ public class ClientApplication {
 
 		final var input = new ObjectInputStream(client.getInputStream());
 
-		final var sb = new StringBuilder();
-		int current, previous = -1;
+		byte type = input.readByte();
+		int payloadSize = input.readInt();
+		byte[] payload = input.readNBytes(payloadSize);
 
-		while ((current = input.read()) != -1) {
-			sb.append((char) current);
-			if (previous == '\n' && current == '\n') {
-				break;
-			}
-			previous = current;
+		System.out.println("Client said: ");
+		System.out.print(type);
+		for (byte b : payload) {
+			System.out.print(b);
 		}
-
-		System.out.println("Client said: \n" + sb);
+		System.out.println();
 
 		input.close();
 

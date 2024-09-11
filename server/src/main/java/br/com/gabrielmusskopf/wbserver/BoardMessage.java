@@ -1,5 +1,9 @@
 package br.com.gabrielmusskopf.wbserver;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 
 /*
@@ -12,19 +16,24 @@ IP: 255.255.255.255
 @RequiredArgsConstructor
 public class BoardMessage {
 
-	private static final MessageAction action = MessageAction.BOARD;
+	private static final MessageAction action = MessageAction.SYNC;
 	private final byte[] content;
 
 	public byte[] serialize() {
-		final byte[] b = new byte[action.name().length() + content.length + 3];
+		int contentSize = action.name().length() + content.length + 3;
 
-		System.arraycopy(action.name().getBytes(), 0, b, 0, action.name().length());
-		b[5] = '\n';
-		System.arraycopy(content, 0, b, 6, content.length);
-		b[b.length - 2] = '\n';
-		b[b.length - 1] = '\n';
+		try {
+			final var byteStream = new ByteArrayOutputStream(contentSize);
+			final var out = new DataOutputStream(byteStream);
 
-		return b;
+			out.write(action.getCode());
+			out.writeInt(content.length);
+			out.write(content);
+
+			return byteStream.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
