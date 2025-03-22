@@ -20,7 +20,7 @@ public class Server {
 			while (true) {
 				final var clientSocket = server.accept();
 				final var client = connect(clientSocket);
-				sendCompleteBoard(client);
+				sendSyncMessage(client);
 				disconnect(client);
 			}
 		}
@@ -42,7 +42,7 @@ public class Server {
 		}
 	}
 
-	private void sendCompleteBoard(Client client) throws IOException {
+	private void sendSyncMessage(Client client) throws IOException {
 		final var currentBoard = whiteboard.getCurrentBoard();
 		byte[] serializedBoard = new byte[(whiteboard.getWidth() * whiteboard.getHeight()) + whiteboard.getHeight()];
 		int p = 0;
@@ -54,7 +54,7 @@ public class Server {
 			serializedBoard[p++] = (byte) '\n';
 		}
 
-		final var message = new BoardMessage(serializedBoard);
+		final var message = new SyncMessage(serializedBoard);
 		client.write(message.serialize());
 	}
 

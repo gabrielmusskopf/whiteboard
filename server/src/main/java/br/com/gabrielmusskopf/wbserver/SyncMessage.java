@@ -6,27 +6,22 @@ import java.io.IOException;
 
 import lombok.RequiredArgsConstructor;
 
-/*
-Ação: CONN, DISC, UPTD
-IP: 255.255.255.255
-
-<ACAO>
-<IP>
- */
+// Structure: [ message type (1 byte) | payload length (1 byte) | payload (N bytes) ]
+// payload: whiteboard rows joined by '\n'
 @RequiredArgsConstructor
-public class BoardMessage {
+public class SyncMessage {
 
 	private static final MessageAction action = MessageAction.SYNC;
 	private final byte[] content;
 
 	public byte[] serialize() {
-		int contentSize = action.name().length() + content.length + 3;
+		int contentSize = action.codeLength() + content.length;
 
 		try {
 			final var byteStream = new ByteArrayOutputStream(contentSize);
 			final var out = new DataOutputStream(byteStream);
 
-			out.write(action.getCode());
+			out.writeInt(action.getCode());
 			out.writeInt(content.length);
 			out.write(content);
 

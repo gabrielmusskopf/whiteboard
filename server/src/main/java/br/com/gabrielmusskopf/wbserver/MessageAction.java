@@ -10,4 +10,8 @@ public enum MessageAction {
 
 	private final int code;
 
+	public int codeLength() {
+		return Integer.BYTES;
+	}
+
 }
